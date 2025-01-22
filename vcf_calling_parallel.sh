@@ -1,4 +1,8 @@
 #!/bin/bash
+
+VCF_DIR="/filer-5/agruppen/PBP/tan/wgs/res/foma" 
+OUTPUT="merged.vcf.gz"
+
 for i in chr1H chr2H chr3H chr4H chr5H chr6H chr7H;
 do
 echo $i
@@ -31,3 +35,19 @@ cd /filer-dg/agruppen/dg4/gaog/rawvcf4
 
 done 
 done
+
+# find all *.vcf.gz 
+VCF_FILES=$(ls ${VCF_DIR}/*.vcf.gz)
+
+# concat all vcf.gz
+"for i in ${VCF_FILES};
+do
+	bcftools index $i
+done
+"
+bcftools concat ${VCF_FILES} -Oz -o ${OUTPUT}
+
+# 输出合并完成的文件名
+echo "合并完成，输出文件为: ${OUTPUT}"
+
+
