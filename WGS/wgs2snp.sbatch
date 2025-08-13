@@ -88,6 +88,8 @@ for sample_dir in "$workspace"/*; do
       INPUT="$picard_out/sorted_${sample_id}_RG.bam" \
       OUTPUT="$picard_out/dedup_sorted_${sample_id}.bam" \
       METRICS_FILE="$picard_out/${sample_id}_metrics.txt"
+  
+  samtools index "$picard_out/dedup_sorted_${sample_id}.bam"
 
   java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/bin/gatk-package-4.1.9.0-local.jar HaplotypeCaller \
       -R "$refgenome" \
