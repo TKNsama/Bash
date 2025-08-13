@@ -89,24 +89,24 @@ for sample_dir in "$workspace"/*; do
       OUTPUT="$picard_out/dedup_sorted_${sample_id}.bam" \
       METRICS_FILE="$picard_out/${sample_id}_metrics.txt"
 
-  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/gatk-package-4.1.9.0-local.jar HaplotypeCaller \
+  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/bin/gatk-package-4.1.9.0-local.jar HaplotypeCaller \
       -R "$refgenome" \
       -I "$picard_out/dedup_sorted_${sample_id}.bam" \
       -O "$gatk_out/raw_${sample_id}.vcf"
 
-  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/gatk-package-4.1.9.0-local.jar SelectVariants \
+  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/bin/gatk-package-4.1.9.0-local.jar SelectVariants \
       -R "$refgenome" \
       -V "$gatk_out/raw_${sample_id}.vcf" \
       --select-type-to-include SNP \
       -O "$gatk_out/${sample_id}_raw_snps.vcf"
 
-  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/gatk-package-4.1.9.0-local.jar SelectVariants \
+  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/bin/gatk-package-4.1.9.0-local.jar SelectVariants \
       -R "$refgenome" \
       -V "$gatk_out/raw_${sample_id}.vcf" \
       --select-type-to-include INDEL \
       -O "$gatk_out/${sample_id}_raw_indels.vcf"
 
-  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/gatk-package-4.1.9.0-local.jar VariantFiltration \
+  java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/bin/gatk-package-4.1.9.0-local.jar VariantFiltration \
       -R "$refgenome" \
       -V "$gatk_out/${sample_id}_raw_snps.vcf" \
       --filter-expression "QD < 2.0 || FS > 60.0 || SOR > 10.0 || MQ < 40.0" \
