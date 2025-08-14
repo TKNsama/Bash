@@ -24,7 +24,7 @@ exec > >(tee -i "$log_file") 2>&1
 
 # Create dictionary and fasta index if not exist
 if [[ ! -f "${refgenome%.fasta}.dict" ]]; then
-  java -jar /opt/Bio/picard-tools/2.21.9.9/picard.jar CreateSequenceDictionary \
+  java -jar /opt/Bio/picard-tools/2.21.9/picard.jar CreateSequenceDictionary \
       R="$refgenome" O="${refgenome%.fasta}.dict"
 fi
 
@@ -63,25 +63,25 @@ for sample_dir in "$workspace"/*; do
 
   samtools flagstat "$bwa_out/$sample_id.sam" > "$bwa_out/${sample_id}_alignment_metrics.txt"
 
-  java -jar /opt/Bio/picard-tools/2.21.9.9/picard.jar SortSam \
+  java -jar /opt/Bio/picard-tools/2.21.9/picard.jar SortSam \
       INPUT="$bwa_out/$sample_id.sam" \
       OUTPUT="$picard_out/sorted_${sample_id}.bam" \
       SORT_ORDER=coordinate
 
-  java -jar /opt/Bio/picard-tools/2.21.9.9/picard.jar AddOrReplaceReadGroups \
+  java -jar /opt/Bio/picard-tools/2.21.9/picard.jar AddOrReplaceReadGroups \
       INPUT="$picard_out/sorted_${sample_id}.bam" \
       OUTPUT="$picard_out/sorted_${sample_id}_RG.bam" \
       RGPL=MGI RGPU=D109LACXX RGLB=Lib1 RGID="$sample_id" RGSM="$sample_id" \
       VALIDATION_STRINGENCY=LENIENT
 
-  java -jar /opt/Bio/picard-tools/2.21.9.9/picard.jar MarkDuplicates \
+  java -jar /opt/Bio/picard-tools/2.21.9/picard.jar MarkDuplicates \
       INPUT="$picard_out/sorted_${sample_id}_RG.bam" \
       OUTPUT="$picard_out/dedup_sorted_${sample_id}.bam" \
       METRICS_FILE="$picard_out/${sample_id}_metrics.txt" \
       CREATE_INDEX=false
 
   # Create CSI index for long chromosomes
-  samtools index -csi "$picard_out/dedup_sorted_${sample_id}.bam"
+  samtools index -c "$picard_out/dedup_sorted_${sample_id}.bam"
 
   # HaplotypeCaller for low coverage / GBS
   java -Xmx16g -jar /opt/Bio/gatk/4.1.9.0/bin/gatk-package-4.1.9.0-local.jar HaplotypeCaller \
