@@ -1,36 +1,73 @@
 #!/bin/bash
 
-#SBATCH --job-name=${prefix}                          # Job name
+#SBATCH --job-name=gwas2                          # Job name
 #SBATCH --auks=yes                                     # Use Kerberos
 #SBATCH --partition=cpu                                # Partition type
 #SBATCH --ntasks=1                                     # Number of tasks
-#SBATCH --cpus-per-task=32                            # Number of CPUs per task
+#SBATCH --cpus-per-task=16                            # Number of CPUs per task
 #SBATCH --mem=100G                                      # Memory allocation
 #SBATCH --nodes=1                                      # Ensure all cores are on one machine
 #SBATCH --output=job_%j.out                         # Standard output log
 #SBATCH --error=job_%j.err                          # Standard error log
-#SBATCH --exclude=slurm-03,slurm-20                    # Exclude nodes
+#SBATCH --time=200:23:37
 
-# ======= Input Files =======
-region_file="regions.txt"           # 每行格式: chr start end
-vcf_file="filtered_grains_248.vcf.gz"  # 使用过滤后的VCF
-tmp_vcf="tmp_covariates.vcf.gz"
+module load plink
+module load gemma
+# ===== Configuration =====
 
-# ======= Step 1: Extract SNPs from specified regions =======
-echo "Extracting SNPs from specified regions..."
-bcftools view -R "$region_file" "$vcf_file" -Oz -o "$tmp_vcf"
-bcftools index "$tmp_vcf"
+VCF="filtered_gwas.vcf.gz"   # 输入 VCF
+OUT="gwas"          # 与 gemma -bfile 保持一致
+N_PC=10                             # PCA covariate 数量
 
-# ======= Step 2: Convert to PLINK format =======
-plink_prefix="snp_covariates"
-plink --vcf "$tmp_vcf" --make-bed --double-id --out "$plink_prefix"
+PLINK=plink
+GEMMA=gemma
+# ===== Step 0: Check =====
+echo "Checking input files..."
+[[ -f "$VCF" ]] || { echo "ERROR: VCF not found"; exit 1; }
+[[ -f "$VCF.tbi" ]] || { echo "ERROR: VCF index not found"; exit 1; }
+# ===== Step 1: VCF → PLINK =====
+echo "Converting VCF to PLINK (wheat chromosomes)..."
+$PLINK \
+  --vcf "$VCF" \
+  --make-bed \
+  --double-id \
+  --allow-extra-chr \
+  --out "$OUT"
+# ===== Step 2: PCA → covariates =====
+echo "Running PCA..."
+$PLINK \
+  --bfile "$OUT" \
+  --pca $N_PC \
+  --out "${OUT}_PCA"
 
-# ======= Step 3: Convert to .raw format (additive coding) =======
-plink --bfile "$plink_prefix" --recode A --out "$plink_prefix"
+echo "Formatting PCA covariates for GEMMA..."
+# eigenvec: FID IID PC1 PC2 ...
+awk -v npc=$N_PC '{
+  for (i=3; i<3+npc; i++) {
+    printf "%s%s", $i, (i==2+npc ? ORS : OFS)
+  }
+}' "${OUT}_PCA.eigenvec" > snp_covariates.covar
+# ===== Step 3: Kinship =====
+echo "Calculating kinship matrix..."
+$GEMMA \
+  -bfile "$OUT" \
+  -gk 1 \
+  -o kinship
+# ===== Step 4: Final check =====
+echo "Checking outputs..."
 
-# ======= Step 4: Format for GEMMA covariate file =======
-# Remove header and non-genotype columns, keep only numeric genotype matrix
-awk 'NR==1 {for (i=1; i<=NF; i++) colname[i]=$i; next} 
-     {printf $1; for (i=7; i<=NF; i++) printf " %s", $i; print ""}' "${plink_prefix}.raw" > snp_covariates.covar
+for f in \
+  "${OUT}.bed" \
+  "${OUT}.bim" \
+  "${OUT}.fam" \
+  "output/kinship.cXX.txt" \
+  "snp_covariates.covar"
+do
+  [[ -f "$f" ]] || { echo "ERROR: Missing $f"; exit 1; }
+done
 
-echo "SNP covariate file generated: snp_covariates.covar"
+echo "================================="
+echo "All GEMMA input files generated."
+echo "You can now submit GWAS jobs."
+echo "================================="
+
