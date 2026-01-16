@@ -17,24 +17,17 @@ module load gemma
 
 # ======= Configuration =======
 vcf_file="gwas.vcf.gz"        # 输入的VCF文件
-sample_file="gwas.id"     # 包含样本名的文本文件（每行一个ID）
 
-# ======= Step 1: Filter VCF by samples =======
-echo "Filtering VCF file for selected samples..."
-filtered_vcf="filtered_${vcf_file}"
-bcftools view -S "$sample_file" "$vcf_file" -Oz -o "$filtered_vcf"
-bcftools index "$filtered_vcf"
-
-# ======= Step 2: Convert VCF to PLINK format =======
+# ======= Step 1: Convert VCF to PLINK format =======
 echo "Converting VCF to PLINK format..."
 plink_prefix="${filtered_vcf%.vcf.gz}"  # 去掉.vcf.gz后缀
 plink --vcf "$filtered_vcf" --make-bed --double-id --allow-extra-chr --out "$plink_prefix"
 
-# ======= Step 3: PCA Analysis =======
+# ======= Step 2: PCA Analysis =======
 echo "Running PCA..."
 plink --bfile "$plink_prefix" --pca 10 --out "${plink_prefix}_PC"
 
-# ======= Step 4: Kinship Matrix =======
+# ======= Step 3: Kinship Matrix =======
 echo "Calculating kinship matrix using GEMMA..."
 gemma -bfile "$plink_prefix" -gk 1 -o kinship_filtered
 
