@@ -18,11 +18,11 @@ for i in {1..21}; do
     echo "" >> $script_name
     echo "module load gemma" >> $script_name
     echo "" >> $script_name
-    echo "gemma -bfile grains_248_filtered.vcf \\" >> $script_name
+    echo "gemma -bfile gwas.vcf.gz \\" >> $script_name
     echo "      -k output/kinship.cXX.txt \\" >> $script_name
     echo "      -n $i \\" >> $script_name
     echo "      -lmm 1 \\" >> $script_name
-    echo "      -c snp_covariates.covar \\" >> $script_name   # optional
+    echo "      -c pca_covariates.covar \\" >> $script_name   # optional
     echo "      -o ${i}_res" >> $script_name
     echo "" >> $script_name
     echo "date" >> $script_name
