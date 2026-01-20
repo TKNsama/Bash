@@ -1,0 +1,91 @@
+.libPaths("/filer-5/agruppen/PBP/tan/R_LIBS/Library")
+
+library(tidyverse)
+library(CMplot)
+library(patchwork)
+
+setwd("/filer-5/agruppen/PBP/tan/gwas/cc/new/output")
+
+plot_gwas_results <- function(file_prefix, threshold_logp = 2, af_threshold = 0.1) {
+  # 读取数据（确保文件名正确）
+  infile <- paste0(file_prefix, "_res.assoc.txt")
+  if (!file.exists(infile)) {
+    message("File not found: ", infile)
+    return(NULL)
+  }
+  df <- read_tsv(infile, show_col_types = FALSE)
+
+  # 检查必须的列
+  required_cols <- c("chr", "rs", "ps", "af", "p_wald")
+  miss <- setdiff(required_cols, colnames(df))
+  if (length(miss) > 0) {
+    stop("Missing required columns: ", paste(miss, collapse = ", "))
+  }
+
+  # 明确构造 P（如果 p_wald 就是 p-value）
+  df <- df %>%
+    mutate(
+      P = as.numeric(p_wald),
+      log_p_value = -log10(p_wald)   # 保留，但不用于过滤
+    )
+
+  # 处理异常 p 值：将 NA/Inf/0 置为极小值（避免 CMplot 报错）
+  df <- df %>%
+    mutate(
+      P = ifelse(is.na(P) | is.infinite(P) | P <= 0, 1e-300, P),
+      P = pmin(pmax(P, 1e-300), 1 - 1e-12)
+    )
+
+  # 诊断输出
+  message("Processing: ", file_prefix,
+          " | rows: ", nrow(df),
+          " | P range: ", format(min(df$P), scientific = TRUE), " - ", format(max(df$P), scientific = TRUE),
+          " | af range: ", min(df$af, na.rm = TRUE), "-", max(df$af, na.rm = TRUE))
+
+  # ===== 不再做任何过滤，直接用全数据 =====
+
+  # 为 CMplot 准备数据：确保列名顺序是 SNP, CHR, POS, P
+  df_cm <- df %>%
+    select(SNP = rs, CHR = chr, POS = ps, P)
+
+  # 额外检查 P 范围（安全）
+  if (any(df_cm$P <= 0 | df_cm$P >= 1 | is.na(df_cm$P))) {
+    stop("Found invalid P values after cleaning. Aborting for file: ", file_prefix)
+  }
+
+  # ---- QQ plot ----
+  CMplot(df_cm,
+         plot.type = "q",
+         file.output = TRUE,
+         file.name = paste0(file_prefix, "_QQ_plot"),
+         dpi = 300,
+         file = "pdf")
+
+  # ---- Manhattan plot ----
+  CMplot(df_cm,
+         plot.type = "m",
+         threshold = c(0.01, 0.05) / nrow(df_cm),
+         threshold.col = c('grey60', 'grey40'),
+         threshold.lty = c(1, 2),
+         threshold.lwd = c(1, 1),
+         amplify = TRUE,
+         signal.cex = c(1, 1),
+         signal.pch = c(20, 20),
+         signal.col = c("black", "grey20"),
+         col = c("black", "grey50"),
+         file.output = TRUE,
+         file.name = paste0(file_prefix, "_plot"),
+         dpi = 300,
+         file = "pdf")
+
+  message("Done: ", file_prefix, " (output files created).")
+  return(TRUE)
+}
+
+# 测试单个文件
+plot_gwas_results("1")
+
+# 批量绘制
+for (i in 1:20) {
+  plot_gwas_results(as.character(i))
+}
