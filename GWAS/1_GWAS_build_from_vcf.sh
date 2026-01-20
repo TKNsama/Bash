@@ -9,26 +9,27 @@
 #SBATCH --nodes=1                                      # Ensure all cores are on one machine
 #SBATCH --output=job_%j.out                         # Standard output log
 #SBATCH --error=job_%j.err                          # Standard error log
+#SBATCH --time=200:23:37
 
-# ======= Load modules =======
-module load bcftools
 module load plink
 module load gemma
 
-# ======= Configuration =======
-vcf_file="gwas.vcf.gz"        # 输入的VCF文件
+# ================== Configuration ==================
+VCF="gwas.vcf.gz"          # 输入 VCF
+PREFIX="gwas"              # PLINK / GEMMA 前缀（不要带扩展名）
+N_PC=10                    # PCA 数量
 
-# ======= Step 1: Convert VCF to PLINK format =======
-echo "Converting VCF to PLINK format..."
-plink_prefix="${filtered_vcf%.vcf.gz}"  # 去掉.vcf.gz后缀
-plink --vcf "$filtered_vcf" --make-bed --double-id --allow-extra-chr --out "$plink_prefix"
+PLINK=plink
+GEMMA=gemma
 
-# ======= Step 2: PCA Analysis =======
-echo "Running PCA..."
-plink --bfile "$plink_prefix" --pca 10 --out "${plink_prefix}_PC"
+# ================== Step 1: VCF → PLINK ==================
+echo "Step 1: Converting VCF to PLINK format..."
+$PLINK \
+  --vcf "$VCF" \
+  --geno 0.1 \
+  --maf 0.1 \
+  --make-bed \
+  --double-id \
+  --allow-extra-chr \
+  --out "$PREFIX"
 
-# ======= Step 3: Kinship Matrix =======
-echo "Calculating kinship matrix using GEMMA..."
-gemma -bfile "$plink_prefix" -gk 1 -o kinship_filtered
-
-echo "All steps completed."
