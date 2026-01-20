@@ -15,7 +15,7 @@ module load gemma
 
 # ================== Configuration ==================
 VCF="gwas.vcf.gz" # 输入 VCF
-PREFIX="gwas" # PLINK / GEMMA 前缀（不要带扩展名）
+PREFIX="gwas.vcf.gz" # PLINK / GEMMA 前缀（不要带扩展名）
 N_PC=10 # PCA 数量
 PLINK=plink
 GEMMA=gemma
