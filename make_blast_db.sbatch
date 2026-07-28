@@ -12,10 +12,13 @@
 #SBATCH --mail-type=END                                 # Type of email notification- BEGIN,END,FAIL,ALL
 #SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 module load blast+
 
 dbtype="prot" # prot or nucl
-input_dir="/filer-5/agruppen/PBP/tan/database/grasses_genome/species_uniq"
+input_dir="$BASE_DIR/database/grasses_genome/species_uniq"
 
 cd "$input_dir"
 

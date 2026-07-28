@@ -11,13 +11,16 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tan@ipk-gatersleben.de
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 module load bwa
 module load samtools
 module load jdk
 module load vcftools
 
-workspace="/filer-5/agruppen/PBP/tan/wgs/mfs1_F2_mapping"
-refgenome="/filer-5/agruppen/PBP/tan/indexDir/barley_index/220809_Foma_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
+workspace="$BASE_DIR/wgs/mfs1_F2_mapping"
+refgenome="$BASE_DIR/indexDir/barley_index/220809_Foma_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
 
 log_file="$workspace/pipeline.log"
 exec > >(tee -i "$log_file") 2>&1

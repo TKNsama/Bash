@@ -13,6 +13,9 @@
 #SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
 #SBATCH --time=168:00:00
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # Load necessary modules
 
 module load bwa
@@ -22,10 +25,10 @@ module load vcftools
 module load gatk
 
 # Define workspace directory
-workspace="/filer-5/agruppen/PBP/tan/wgs/workspace/bowman"
+workspace="$BASE_DIR/wgs/workspace/bowman"
 
 # Define reference genome and sample list
-refgenome="/filer-5/agruppen/PBP/tan/indexDir/barley_index/220830_Bowman_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
+refgenome="$BASE_DIR/indexDir/barley_index/220830_Bowman_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
 samples=("sample1" "sample2" "sample3" "sample4") # Replace with your actual sample names
 name="KENANJAN2025"
 log_file="$workspace/pipeline.log"
@@ -59,7 +62,7 @@ do
   if [[ -f "$bam_file" ]]; then
     echo "BAM file for $sample already exists. Skipping alignment and BAM conversion."
   else
-    bwa mem -t 48 -M -R "@RG\tPU:"${name}"\tID:"${sample}"\tSM:"${sample}"\tLB:WXS\tPL:ILLUMINA" "$refgenome" "/filer-5/agruppen/PBP/tan/wgs/workspace/${sample}_1.fq.gz" "/filer-5/agruppen/PBP/tan/wgs/workspace/${sample}_2.fq.gz" | \
+    bwa mem -t 48 -M -R "@RG\tPU:"${name}"\tID:"${sample}"\tSM:"${sample}"\tLB:WXS\tPL:ILLUMINA" "$refgenome" "$BASE_DIR/wgs/workspace/${sample}_1.fq.gz" "$BASE_DIR/wgs/workspace/${sample}_2.fq.gz" | \
     sambamba view -S -t 48 -f bam /dev/stdin | \
     sambamba sort -t 48 -n --tmpdir="$workspace/tmp" -o "$bwa_dir/${sample}_sorted.bam" /dev/stdin
   fi

@@ -10,6 +10,10 @@
 #SBATCH --error=job_%j.err
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=tan@ipk-gatersleben.de
+
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # Load modules
 module load fastp
 module load bwa
@@ -21,7 +25,7 @@ raw_data_dir="/filer-5/user/tan/transfer/vrs5_dap_seq" # raw data location
 clean_data_dir="/filer-5/user/tan/transfer/vrs5_dap_seq/clean"
 bam_dir="/filer-5/user/tan/transfer/vrs5_dap_seq/bam"
 peak_dir="/filer-5/user/tan/transfer/vrs5_dap_seq/peak"
-ref_genome="/filer-5/agruppen/PBP/tan/indexDir/barley_index/Barley_Morex_V2_pseudomolecules.fa" # ref genome
+ref_genome="$BASE_DIR/indexDir/barley_index/Barley_Morex_V2_pseudomolecules.fa" # ref genome
 threads=32
 
 # Create output dirs

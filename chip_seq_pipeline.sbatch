@@ -13,6 +13,9 @@
 #SBATCH --mail-user=tan@ipk-gatersleben.de
 #SBATCH --time=168:00:00
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # Load necessary modules
 module load fastp
 module load bowtie2
@@ -22,9 +25,9 @@ module load bedtools
 module load bedGraphToBigWig
 
 # 参数设置
-RAW_DATA_DIR="/filer-5/agruppen/PBP/tan/chipseq"                # 原始数据目录
-workspace="/filer-5/agruppen/PBP/tan/chipseq/workspace"                    # 输出目录
-REFERENCE_GENOME="/filer-5/agruppen/PBP/tan/indexDir/barley_index/Barley_Morex_V2_pseudomolecules_bowtie2_index"       # Bowtie2 索引的基因组前缀
+RAW_DATA_DIR="$BASE_DIR/chipseq"                # 原始数据目录
+workspace="$BASE_DIR/chipseq/workspace"                    # 输出目录
+REFERENCE_GENOME="$BASE_DIR/indexDir/barley_index/Barley_Morex_V2_pseudomolecules_bowtie2_index"       # Bowtie2 索引的基因组前缀
 SAMPLE_NAME="SRR1223012_1"                     # 样本名称
 INPUT_NAME="SRR1223527_1"                       # 对照样本名称
 THREADS=8                                # 使用的线程数
@@ -99,8 +102,8 @@ samtools depth ${workspace}/bowtie2/${INPUT_NAME}_dedup.bam > ${INPUT_NAME}_dept
 bedtools genomecov -ibam ${workspace}/bowtie2/${SAMPLE_NAME}_dedup.bam -bg > ${SAMPLE_NAME}_depth.bedgraph
 bedtools genomecov -ibam ${workspace}/bowtie2/${INPUT_NAME}_dedup.bam -bg > ${INPUT_NAME}_depth.bedgraph
 
-bedGraphToBigWig ${SAMPLE_NAME}_depth.bedgraph /filer-5/agruppen/PBP/tan/indexDir/barley_index/Barley_Morex_V2_pseudomolecules.chrom.sizes ${SAMPLE_NAME}.bw
-bedGraphToBigWig ${INPUT_NAME}_depth.bedgraph /filer-5/agruppen/PBP/tan/indexDir/barley_index/Barley_Morex_V2_pseudomolecules.chrom.sizes ${INPUT_NAME}.bw
+bedGraphToBigWig ${SAMPLE_NAME}_depth.bedgraph $BASE_DIR/indexDir/barley_index/Barley_Morex_V2_pseudomolecules.chrom.sizes ${SAMPLE_NAME}.bw
+bedGraphToBigWig ${INPUT_NAME}_depth.bedgraph $BASE_DIR/indexDir/barley_index/Barley_Morex_V2_pseudomolecules.chrom.sizes ${INPUT_NAME}.bw
 
 
 echo "### Pipeline 完成 ###"

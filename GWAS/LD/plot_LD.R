@@ -1,4 +1,7 @@
-.libPaths("/filer-5/agruppen/PBP/tan/R_LIBS/Library")
+# === Configuration ===
+BASE_DIR <- Sys.getenv("BASE_DIR", unset = "/filer-5/agruppen/PBP/tan")
+
+.libPaths(paste0(BASE_DIR, "/R_LIBS/Library"))
 
 library(tidyverse)
 library(patchwork)
@@ -177,7 +180,7 @@ plot_gwas_gene_ld <- function(
 plot_gwas_gene_ld(
   assoc_file  = "output/likehood_1_2/1_res.assoc.txt",
   ld_file     = "LD_chr1B.ld",
-  gene_file   = "/filer-5/agruppen/PBP/tan/wheat/cs_IAAS/CS-IAAS_v1.1_HC.gff3",
+  gene_file   = paste0(BASE_DIR, "/wheat/cs_IAAS/CS-IAAS_v1.1_HC.gff3"),
   gene_format = "gff",
   chr         = "1B",
   start       = 22000000,

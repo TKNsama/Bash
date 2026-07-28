@@ -43,13 +43,7 @@ $GEMMA
   -o kinship
 # ================== Step 5: Final checks ==================
 echo "Step 5: Checking output files..."
-for f in 
-  "${PREFIX}.bed" 
-  "${PREFIX}.bim" 
-  "${PREFIX}.fam" 
-  "output/kinship.cXX.txt" 
-  "pca_covariates.covar"
-do
+for f in "${PREFIX}.bed" "${PREFIX}.bim" "${PREFIX}.fam" "output/kinship.cXX.txt" "pca_covariates.covar"; do
   [[ -f "$f" ]] || { echo "ERROR: Missing $f"; exit 1; }
 done
 echo "=============================================="

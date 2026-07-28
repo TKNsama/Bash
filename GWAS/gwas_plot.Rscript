@@ -1,10 +1,13 @@
-.libPaths("/filer-5/agruppen/PBP/tan/R_LIBS/Library")
+# === Configuration ===
+BASE_DIR <- Sys.getenv("BASE_DIR", unset = "/filer-5/agruppen/PBP/tan")
+
+.libPaths(paste0(BASE_DIR, "/R_LIBS/Library"))
 
 library(tidyverse)
 library(CMplot)
 library(patchwork)
 
-setwd("/filer-5/agruppen/PBP/tan/gwas/cc/new/output")
+setwd(paste0(BASE_DIR, "/gwas/cc/new/output"))
 
 plot_gwas_results <- function(file_prefix, threshold_logp = 2, af_threshold = 0.1) {
   # 读取数据（确保文件名正确）

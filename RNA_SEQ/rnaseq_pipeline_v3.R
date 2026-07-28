@@ -20,6 +20,9 @@ library(ComplexHeatmap)
 library(circlize)
 library(cluster)
 
+# === Configuration ===
+BASE_DIR <- Sys.getenv("BASE_DIR", unset = "/filer-5/agruppen/PBP/tan")
+
 # ------------------------
 # Set working directory
 # ------------------------

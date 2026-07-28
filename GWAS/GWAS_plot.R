@@ -3,7 +3,10 @@ library(tidyverse)
 library(CMplot)
 library(patchwork)
 
-setwd("//filer-5/agruppen/PBP/tan/gwas")
+# === Configuration ===
+BASE_DIR <- Sys.getenv("BASE_DIR", unset = "/filer-5/agruppen/PBP/tan")
+
+setwd(paste0(BASE_DIR, "/gwas"))
 
 # 定义绘制CMplot的函数 --------------------
 plot_gwas_results <- function(file_prefix, threshold_logp = 2, af_threshold = 0.1) {
@@ -38,7 +41,7 @@ for (i in 1:20) {
 }
 
 # 过滤后绘图 ------------------------
-setwd("//filer-5/agruppen/PBP/tan/gwas/output")
+setwd(paste0(BASE_DIR, "/gwas/output"))
 plot_gwas_results <- function(file_prefix, threshold_logp = 2) {
   # 读取过滤后的数据
   filter_file <- paste0(file_prefix, "_filter.tsv")

@@ -12,11 +12,14 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tan@ipk-gatersleben.de
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # Load necessary modules
 module load sratoolkit
 
 # Define data directory and SRA list file
-data_dir="/filer-5/agruppen/PBP/tan/chipseq"
+data_dir="$BASE_DIR/chipseq"
 sra_list="SRA_list.txt"
 
 # Create data directory if it doesn't exist

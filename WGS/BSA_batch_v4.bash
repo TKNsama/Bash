@@ -1,9 +1,12 @@
 #!/bin/bash
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # --- 核心配置 ---
-DATA_ROOT="/filer-5/agruppen/PBP/tan/wgs/mfs2_Ravi"
-WORKSPACE="/filer-5/agruppen/PBP/tan/wgs/mfs2_Ravi/workspace"
-REFGENOME="/filer-5/agruppen/PBP/tan/barley/Hv_Morex_v3_hisat2_index/Hv_Morex_v3_pseudomolecules.fa"
+DATA_ROOT="$BASE_DIR/wgs/mfs2_Ravi"
+WORKSPACE="$BASE_DIR/wgs/mfs2_Ravi/workspace"
+REFGENOME="$BASE_DIR/barley/Hv_Morex_v3_hisat2_index/Hv_Morex_v3_pseudomolecules.fa"
 
 SCRIPT_DIR="$WORKSPACE/scripts"
 LOG_DIR="$WORKSPACE/logs"

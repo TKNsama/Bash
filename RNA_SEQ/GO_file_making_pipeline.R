@@ -3,6 +3,10 @@
 # Date: 2025-05-08
 # Description: Description of the script
 library(tidyverse)
+
+# === Configuration ===
+BASE_DIR <- Sys.getenv("BASE_DIR", unset = "/filer-5/agruppen/PBP/tan")
+
 setwd("U:/code/r_Pipeline/workspace/")
 # 读取原始注释文件（包含列名，tab分隔）
 df <- read.table("res/bowman_annotations.tsv", sep = "\t", header = FALSE, quote = "\"", stringsAsFactors = FALSE)

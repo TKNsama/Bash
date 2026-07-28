@@ -10,8 +10,11 @@
 #SBATCH --output=job_%j.out                             # File to which standard out will be written
 #SBATCH --error=job_%j.err                              # File to which standard err will be written
 #SBATCH --mail-type=END                                 # Type of email notification- BEGIN,END,FAIL,ALL
-#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent 
+#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
+
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
 
 module load R
 
-Rscript /filer-5/agruppen/PBP/tan/gwas/cc/new/output/gwas_plot_raw.Rscript
+Rscript $BASE_DIR/gwas/cc/new/output/gwas_plot_raw.Rscript

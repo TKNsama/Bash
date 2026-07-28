@@ -12,10 +12,13 @@
 #SBATCH --mail-type=END                                 # Type of email notification- BEGIN,END,FAIL,ALL
 #SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 module load HOMER
 # Directory setup
-ref_genome="/filer-5/agruppen/PBP/tan/indexDir/barley_index/220830_Bowman_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
-gtf="/filer-5/agruppen/PBP/tan/indexDir/barley_index/Bowman.gtf"
+ref_genome="$BASE_DIR/indexDir/barley_index/220830_Bowman_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
+gtf="$BASE_DIR/indexDir/barley_index/Bowman.gtf"
 input_dir="/filer-5/user/tan/transfer/DAPseq/peaks"
 output_dir="/filer-5/user/tan/transfer/DAPseq/peaks_analysis"
 

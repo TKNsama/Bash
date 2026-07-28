@@ -10,7 +10,11 @@
 #SBATCH --output=job_%j.out                             # File to which standard out will be written
 #SBATCH --error=job_%j.err                              # File to which standard err will be written
 #SBATCH --mail-type=END                                 # Type of email notification- BEGIN,END,FAIL,ALL
-#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent 
+#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
+
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 module load blast+
 module load bedtools
 
@@ -18,10 +22,10 @@ module load bedtools
 #!/bin/bash
 
 # ===== 用户自定义配置 =====
-query_file="/filer-5/agruppen/PBP/tan/database/relative_species_pep/query.fa"
+query_file="$BASE_DIR/database/relative_species_pep/query.fa"
 output_res="blast_output.txt"
-output_dir="/filer-5/agruppen/PBP/tan/database/relative_species_pep/res"
-work_dir="/filer-5/agruppen/PBP/tan/database/relative_species_pep" # blastdb位置
+output_dir="$BASE_DIR/database/relative_species_pep/res"
+work_dir="$BASE_DIR/database/relative_species_pep" # blastdb位置
 max_hits=5
 threads=4  # 可修改线程数
 

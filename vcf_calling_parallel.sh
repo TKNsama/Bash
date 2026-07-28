@@ -1,6 +1,9 @@
 #!/bin/bash
 
-VCF_DIR="/filer-5/agruppen/PBP/tan/wgs/res/foma" 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
+VCF_DIR="$BASE_DIR/wgs/res/foma"
 OUTPUT="merged.vcf.gz"
 
 for i in chr1H chr2H chr3H chr4H chr5H chr6H chr7H;

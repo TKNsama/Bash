@@ -10,7 +10,11 @@
 #SBATCH --output=job_%j.out                             # File to which standard out will be written
 #SBATCH --error=job_%j.err                              # File to which standard err will be written
 #SBATCH --mail-type=END                                 # Type of email notification- BEGIN,END,FAIL,ALL
-#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent 
+#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
+
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # load module
 
 module load mafft
@@ -19,7 +23,7 @@ module load seqkit
 module load EMBOSS
 module load trimAl
 # env of pal2nal
-PAL2NAL="/filer-5/agruppen/PBP/tan/software/pal2nal.v14/pal2nal.pl"
+PAL2NAL="$BASE_DIR/software/pal2nal.v14/pal2nal.pl"
 # the input file from 1.cds_cleaner
 fasta="ancient_clade.id.cds.clean.cds.fasta"
 

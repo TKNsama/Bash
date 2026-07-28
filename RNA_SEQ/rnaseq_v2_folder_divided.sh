@@ -10,7 +10,10 @@
 #SBATCH --output=job_%j.out                             # File to which standard out will be written
 #SBATCH --error=job_%j.err                              # File to which standard err will be written
 #SBATCH --mail-type=END                                 # Type of email notification- BEGIN,END,FAIL,ALL
-#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent 
+#SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
+
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
 
 # rawdata需要后缀为_1.fq.gz _2.fq.gz
 
@@ -20,8 +23,8 @@ module load kallisto
 
 # ===== 参数设置 =====
 raw_data_dir="/filer-5/agruppen/PBP/huang/MADS5/RNA_Seq/VRN1-HA/raw_data/X204SC23121144-Z01-F003/Merged"
-processed_data_dir="/filer-5/agruppen/PBP/tan/rna_seq/mads5_2"
-index_dir="/filer-5/agruppen/PBP/tan/indexDir"
+processed_data_dir="$BASE_DIR/rna_seq/mads5_2"
+index_dir="$BASE_DIR/indexDir"
 index_file="$index_dir/barley_v2_ALL_cds.idx"
 threads=8
 

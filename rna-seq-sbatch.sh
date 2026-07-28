@@ -1,3 +1,8 @@
+#!/bin/bash
+
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 raw_data_dir="/filer-5/user/tan/barley_expression_database_rawdata/download.big.ac.cn/gsa2/CRA011642"
 processed_data_dir="/filer-5/user/tan/barley_expression_database_rawdata/01fp"
 index_dir="/filer-5/user/tan/indexDir"

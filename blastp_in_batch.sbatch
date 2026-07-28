@@ -12,15 +12,18 @@
 #SBATCH --mail-type=END                                 # Type of email notification- BEGIN,END,FAIL,ALL
 #SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # 检查是否成功加载模块
 module load blast+
 module load bedtools 
 
 # 设置参数
-query_file="/filer-5/agruppen/PBP/tan/poaceae_database/query.fa"
+query_file="$BASE_DIR/poaceae_database/query.fa"
 output_res="blastp_output.txt"
-output_dir="/filer-5/agruppen/PBP/tan/poaceae_database/res"
-work_dir="/filer-5/agruppen/PBP/tan/poaceae_database/amino_acid"
+output_dir="$BASE_DIR/poaceae_database/res"
+work_dir="$BASE_DIR/poaceae_database/amino_acid"
 
 cd "$work_dir" || exit 1
 

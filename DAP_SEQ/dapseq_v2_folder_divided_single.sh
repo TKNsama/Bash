@@ -13,6 +13,9 @@
 #SBATCH --mail-user=tan@ipk-gatersleben.de  # Email to which notifications will be sent
 #SBATCH --time=18:16:40
 
+# === Configuration ===
+BASE_DIR="${BASE_DIR:-/filer-5/agruppen/PBP/tan}"
+
 # don't know why, but it should be inputed
 source /etc/profile
 module load fastp
@@ -24,7 +27,7 @@ raw_data_dir="/filer-5/user/tan/transfer/DAPseq"                  # <-- 修改�
 clean_data_dir="/filer-5/user/tan/transfer/DAPseq/clean"
 bam_dir="/filer-5/user/tan/transfer/DAPseq/bam"
 peak_dir="/filer-5/user/tan/transfer/DAPseq/peaks"
-ref_genome="/filer-5/agruppen/PBP/tan/indexDir/barley_index/220830_Bowman_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
+ref_genome="$BASE_DIR/indexDir/barley_index/220830_Bowman_pseudomolecules_and_unplaced_contigs_CPclean.fasta"
 threads=12
 
 # Create output dirs
